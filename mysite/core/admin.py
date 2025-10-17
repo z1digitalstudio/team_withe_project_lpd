@@ -23,7 +23,7 @@ class BlogAdmin(admin.ModelAdmin):
 
 
 @admin.register(Post)
-class PostAdmin(ImportExportModelAdmin):
+class PostAdmin(admin.ModelAdmin):
     list_display = ('title', 'blog', 'created_at', 'updated_at')
     list_filter = ('created_at', 'tags')
     search_fields = ('title', 'content')

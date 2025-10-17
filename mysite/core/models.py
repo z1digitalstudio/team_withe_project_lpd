@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from tinymce.models import HTMLField
 
 User = settings.AUTH_USER_MODEL
 
@@ -24,7 +25,7 @@ class Post(models.Model):
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name='posts')
     title = models.CharField(max_length=250)
     slug = models.SlugField(max_length=260, unique=True)
-    content = models.TextField()
+    content = HTMLField()
     excerpt = models.TextField(blank=True)
     cover = models.ImageField(upload_to='posts/covers/', null=True, blank=True)
     tags = models.ManyToManyField(Tag, related_name='posts', blank=True)
