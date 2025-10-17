@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{{ post.title }}</title>
+</head>
+<body>
+  <h1>{{ post.title }}</h1>
+  <p><em>Publicado el {{ post.published_at|date:"d M Y" }}</em></p>
+  <hr>
+  <div>
+    {{ post.content|safe }}
+  </div>
+  <p><a href="{% url 'post_list' %}">← Volver al blog</a></p>
+</body>
+</html>
