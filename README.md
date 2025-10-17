@@ -56,3 +56,119 @@ Modelo principal con:
 ```bash
 git clone https://github.com/luisparadela-z1/1710-cms.git
 cd 1710-cms/mysite
+
+2️⃣ Activar el entorno virtual
+source ../venv/bin/activate
+
+3️⃣ Instalar dependencias
+pip install -r requirements.txt
+
+4️⃣ Aplicar migraciones
+python manage.py migrate
+
+5️⃣ Crear superusuario (si no lo has hecho)
+python manage.py createsuperuser
+
+6️⃣ Ejecutar el servidor de desarrollo
+python manage.py runserver
+
+7️⃣ Accede desde el navegador
+
+Admin: http://127.0.0.1:8000/admin/
+
+Blog público: http://127.0.0.1:8000/blog/
+
+📦 Estructura del proyecto
+1710-cms/
+│
+├── mysite/
+│   ├── mysite/
+│   │   ├── settings.py
+│   │   ├── urls.py
+│   │   └── ...
+│   │
+│   ├── core/
+│   │   ├── admin.py
+│   │   ├── models.py
+│   │   ├── urls.py
+│   │   ├── views.py
+│   │   └── templates/
+│   │       └── core/
+│   │           ├── post_list.html
+│   │           └── post_detail.html
+│   │
+│   ├── manage.py
+│
+├── venv/
+│
+└── README.md
+
+📚 Dependencias principales
+
+Archivo requirements.txt recomendado:
+
+Django>=5.2
+django-tinymce>=4.0
+django-import-export>=4.0
+Pillow>=10.0
+
+
+Instálalas con:
+
+pip install -r requirements.txt
+
+🧭 Funcionalidades disponibles
+Funcionalidad	Estado	Descripción
+Crear Blogs por usuario	✅	Cada usuario tiene un blog propio
+Crear Posts con editor	✅	Editor TinyMCE activado
+Añadir etiquetas	✅	Sistema de tags reutilizables
+Subir imágenes	✅	Campo cover en los posts
+Filtrar y buscar en el admin	✅	Configurado en admin.py
+Mostrar posts publicados	✅	Listado en /blog/
+Detalle del post	✅	Vista /blog/<slug>/
+Control de visibilidad por usuario	✅	Cada usuario ve solo su blog
+🔮 Pendiente por implementar (Día 2 y siguientes)
+🔹 Fase 2 – Mejoras del blog público
+
+ Añadir paginación al listado de posts
+
+ Mostrar imagen de portada (cover) en post_list.html
+
+ Mostrar etiquetas y autor en post_detail.html
+
+ Añadir sistema de comentarios
+
+🔹 Fase 3 – Autenticación y dashboards
+
+ Permitir registro y login desde el frontend
+
+ Dashboard de usuario fuera del admin
+
+ Perfil público (/user/<username>/)
+
+🔹 Fase 4 – Diseño y estilo
+
+ Crear plantilla base (base.html)
+
+ Integrar TailwindCSS o Bootstrap
+
+ Añadir cabecera, footer y navegación responsive
+
+🔹 Fase 5 – API y despliegue
+
+ Implementar API REST con Django REST Framework
+
+ Preparar para despliegue en Render / Railway / Vercel
+
+💡 Autor
+
+👤 Luis Paradela
+📦 GitHub: luisparadela-z1
+
+🗓️ Próximo paso
+
+➡️ Día 2:
+Implementar comentarios, mostrar imágenes y etiquetas en el frontend, y crear una plantilla base con un diseño inicial.
+
+
+
