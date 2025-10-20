@@ -1,20 +1,30 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Blog</title>
-</head>
-<body>
-  <h1>Lista de Posts</h1>
-  <ul>
-  {% for post in posts %}
-    <li>
-      <a href="{% url 'post_detail' post.slug %}">{{ post.title }}</a>
-      <p>{{ post.created_at }}</p>
-    </li>
-  {% empty %}
-    <li>No hay publicaciones todavía.</li>
-  {% endfor %}
-  </ul>
-</body>
-</html>
+{% extends 'core/base.html' %}
+
+{% block title %}Posts - Mi Blog{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">📰 Últimos Posts</h1>
+
+<div class="row">
+    {% for post in posts %}
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                {% if post.cover %}
+                    <img src="{{ post.cover.url }}" class="card-img-top post-cover" alt="{{ post.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ post.title }}</h5>
+                    <p class="card-text text-muted">{{ post.excerpt|truncatewords:30 }}</p>
+                    <p>
+                        <small>Autor: {{ post.blog.user.username }} | 
+                        Publicado: {{ post.published_at|date:"d M Y" }}</small>
+                    </p>
+                    <a href="{% url 'post_detail' slug=post.slug %}" class="btn btn-primary btn-sm">Leer más</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>No hay publicaciones todavía.</p>
+    {% endfor %}
+</div>
+{% endblock %}
