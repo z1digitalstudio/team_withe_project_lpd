@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'tinymce',
     'import_export', 
     'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -155,6 +156,7 @@ TINYMCE_DEFAULT_CONFIG = {
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',  # Agregar esta línea
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
