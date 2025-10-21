@@ -1,7 +1,14 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from . import views
 
+router = DefaultRouter()
+router.register(r'users', views.UserViewSet)
+router.register(r'blogs', views.BlogViewSet, basename='blog')
+router.register(r'posts', views.PostViewSet, basename='post')
+router.register(r'tags', views.TagViewSet)
+
 urlpatterns = [
-    path('', views.post_list, name='post_list'),
-    path('<slug:slug>/', views.post_detail, name='post_detail'),
+    path('', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls')),
 ]
