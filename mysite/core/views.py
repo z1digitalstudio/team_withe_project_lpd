@@ -9,6 +9,7 @@ from .serializers import (
     UserSerializer, BlogSerializer, PostSerializer, 
     PostCreateSerializer, TagSerializer, UserRegistrationSerializer, UserLoginSerializer
 )
+from .permissions import IsOwnerOrSuperuser, IsOwnerOrSuperuserForBlog
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
@@ -51,7 +52,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 
 class BlogViewSet(viewsets.ModelViewSet):
     serializer_class = BlogSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrSuperuserForBlog]
     
     def get_queryset(self):
         if self.request.user.is_superuser:
@@ -67,12 +68,11 @@ class TagViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 class PostViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrSuperuser]
     
     def get_queryset(self):
-        if self.request.user.is_superuser:
-            return Post.objects.all()
-        return Post.objects.filter(blog__user=self.request.user)
+        # Cualquier usuario autenticado puede ver todos los posts
+        return Post.objects.all()
     
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
