@@ -1,59 +1,41 @@
-# 📰 1710-CMS (Django Blog CMS)
+📰 1710-CMS – Blog CMS con Django
 
-Este proyecto es un **CMS (Content Management System)** creado con Django.  
-Permite a cada usuario tener su propio blog, crear publicaciones con un editor de texto enriquecido (TinyMCE), subir imágenes, asignar etiquetas y gestionarlas desde el panel de administración.
+Un CMS (Content Management System) desarrollado con Django, que permite a los usuarios crear y administrar su propio blog personal.
+Cada usuario puede registrarse, crear publicaciones con un editor enriquecido (TinyMCE), añadir imágenes, etiquetas, y gestionar todo su contenido desde el panel de administración o mediante una API REST.
 
----
+🚀 Estado del Proyecto
 
-## 🚀 Estado actual del proyecto
+✅ Completado
 
-### ✅ **Configuración completada**
-- Proyecto base Django (`mysite`)
-- Aplicación principal (`core`)
-- Entorno virtual configurado
-- Módulos instalados y migraciones aplicadas
-- Superusuario creado y acceso al panel de administración habilitado
+Este proyecto forma parte del Proyecto 1: Blog CMS con Django, cuyo objetivo fue aprender a configurar, desarrollar y documentar un CMS completo utilizando el ecosistema Django.
 
-### ✅ **Integraciones implementadas**
-- **TinyMCE** como editor de texto enriquecido para los posts
-- **Django Import-Export** para importar/exportar contenido desde el panel de admin
-- Configuración de **MEDIA_URL** y **MEDIA_ROOT** para subir imágenes
-- Administración personalizada: cada usuario solo puede ver y editar su propio blog y posts
+🧱 Arquitectura del Sistema
+🔹 Modelos de Datos
+User (Django built-in)
+ └── Blog (1:1 con User)
+      └── Post (N:1 con Blog)
+           └── Tag (M:N con Post)
 
-### ✅ **Modelos implementados**
-#### `Blog`
-Cada usuario tiene un blog con:
-- `title`: título del blog
-- `bio`: descripción o biografía
-- `user`: relación OneToOne con el usuario
+🔹 Funcionalidades Principales
 
-#### `Tag`
-Sistema de etiquetas reutilizables.
+Registro y autenticación de usuarios
 
-#### `Post`
-Modelo principal con:
-- `title`, `slug`, `content`, `excerpt`, `cover`, `tags`
-- Campos de control: `is_published`, `created_at`, `updated_at`, `published_at`
-- Relación con `Blog`
+Creación y gestión de blogs personales
 
-### ✅ **Panel de administración**
-- Integración de TinyMCE para edición de texto
-- Filtros, búsqueda y listado personalizados
-- Usuarios no superusuarios solo pueden ver su propio contenido
+Editor de texto enriquecido (TinyMCE)
 
-### ✅ **Frontend actual**
-- `/blog/` → lista todos los posts publicados
-- `/blog/<slug>/` → muestra el contenido completo de un post
-- Templates:  
-  - `post_list.html`
-  - `post_detail.html`
+Sistema de etiquetas reutilizables
 
----
+Subida y gestión de imágenes
 
-## ⚙️ **Instalación y ejecución local**
+Exportación e importación de contenido (CSV, JSON, XLS)
 
-### 1️⃣ Clonar el repositorio
-```bash
+API REST funcional para consumo externo
+
+Panel de administración personalizado por usuario
+
+⚙️ Instalación y Ejecución Local
+1️⃣ Clonar el repositorio
 git clone https://github.com/luisparadela-z1/1710-cms.git
 cd 1710-cms/mysite
 
@@ -66,109 +48,117 @@ pip install -r requirements.txt
 4️⃣ Aplicar migraciones
 python manage.py migrate
 
-5️⃣ Crear superusuario (si no lo has hecho)
+5️⃣ Crear superusuario
 python manage.py createsuperuser
 
-6️⃣ Ejecutar el servidor de desarrollo
+6️⃣ Ejecutar el servidor
 python manage.py runserver
 
-7️⃣ Accede desde el navegador
+7️⃣ Acceder desde el navegador
 
-Admin: http://127.0.0.1:8000/admin/
+Panel Admin: http://127.0.0.1:8000/admin/
 
 Blog público: http://127.0.0.1:8000/blog/
 
-📦 Estructura del proyecto
+🗂️ Estructura del Proyecto
 1710-cms/
 │
 ├── mysite/
-│   ├── mysite/
-│   │   ├── settings.py
-│   │   ├── urls.py
-│   │   └── ...
-│   │
 │   ├── core/
 │   │   ├── admin.py
 │   │   ├── models.py
 │   │   ├── urls.py
 │   │   ├── views.py
-│   │   └── templates/
-│   │       └── core/
-│   │           ├── post_list.html
-│   │           └── post_detail.html
+│   │   └── templates/core/
+│   │       ├── post_list.html
+│   │       └── post_detail.html
+│   │
+│   ├── mysite/
+│   │   ├── settings.py
+│   │   ├── urls.py
+│   │   └── ...
 │   │
 │   ├── manage.py
 │
 ├── venv/
-│
 └── README.md
 
-📚 Dependencias principales
+📦 Dependencias Principales
 
-Archivo requirements.txt recomendado:
+Archivo requirements.txt:
 
 Django>=5.2
 django-tinymce>=4.0
 django-import-export>=4.0
+django-rest-framework>=3.15
 Pillow>=10.0
 
 
-Instálalas con:
+Instalación:
 
 pip install -r requirements.txt
 
-🧭 Funcionalidades disponibles
+🧭 Funcionalidades Implementadas
 Funcionalidad	Estado	Descripción
-Crear Blogs por usuario	✅	Cada usuario tiene un blog propio
-Crear Posts con editor	✅	Editor TinyMCE activado
-Añadir etiquetas	✅	Sistema de tags reutilizables
-Subir imágenes	✅	Campo cover en los posts
-Filtrar y buscar en el admin	✅	Configurado en admin.py
-Mostrar posts publicados	✅	Listado en /blog/
-Detalle del post	✅	Vista /blog/<slug>/
-Control de visibilidad por usuario	✅	Cada usuario ve solo su blog
-🔮 Pendiente por implementar (Día 2 y siguientes)
-🔹 Fase 2 – Mejoras del blog público
+Registro/Login de usuarios	✅	Sistema de autenticación integrado
+Blog personal por usuario	✅	Cada usuario tiene su propio blog
+Creación y edición de posts	✅	Editor TinyMCE desde el admin
+Etiquetas reutilizables	✅	Relación ManyToMany con Post
+Subida de imágenes	✅	Campo cover en los posts
+Filtros y búsqueda en admin	✅	Personalización avanzada de admin
+API REST funcional	✅	Endpoints para Blog, Post y Tag
+Exportación/Importación de datos	✅	Integrado con django-import-export
+Control de visibilidad por usuario	✅	Cada usuario ve solo su contenido
+Frontend básico con templates	✅	Listado y detalle de posts publicados
+🔌 Endpoints Principales (API REST)
+Endpoint	Método	Descripción
+/api/blogs/	GET / POST	Listar o crear blogs
+/api/posts/	GET / POST	Listar o crear posts
+/api/tags/	GET / POST	Listar o crear etiquetas
+/api/posts/<id>/	GET / PUT / DELETE	Ver, editar o eliminar un post
 
- Añadir paginación al listado de posts
+La API utiliza Django REST Framework con autenticación básica.
 
- Mostrar imagen de portada (cover) en post_list.html
+🧠 Enfoque Formativo y Aprendizaje con IA
 
- Mostrar etiquetas y autor en post_detail.html
+Este proyecto fue desarrollado con un enfoque educativo, utilizando la IA como copiloto de aprendizaje.
+Se fomentó:
 
- Añadir sistema de comentarios
+Comprensión profunda del ecosistema Django
 
-🔹 Fase 3 – Autenticación y dashboards
+Escritura manual de todo el código
 
- Permitir registro y login desde el frontend
+Uso de IA para consultas, depuración y buenas prácticas
 
- Dashboard de usuario fuera del admin
+🧰 Tecnologías y Librerías
 
- Perfil público (/user/<username>/)
+Django – Framework principal
 
-🔹 Fase 4 – Diseño y estilo
+Django REST Framework – API REST
 
- Crear plantilla base (base.html)
+django-tinymce – Editor HTML enriquecido
 
- Integrar TailwindCSS o Bootstrap
+django-import-export – Exportación e importación de datos
 
- Añadir cabecera, footer y navegación responsive
+Pillow – Manejo de imágenes
 
-🔹 Fase 5 – API y despliegue
+SQLite – Base de datos de desarrollo
 
- Implementar API REST con Django REST Framework
+📘 Objetivos de Aprendizaje Alcanzados
 
- Preparar para despliegue en Render / Railway / Vercel
+✅ Configuración completa de proyectos Django
+✅ Diseño de modelos y relaciones entre entidades
+✅ Personalización avanzada del panel admin
+✅ Implementación de API REST con DRF
+✅ Gestión de dependencias y entorno virtual
+✅ Buenas prácticas de código y estructura
+✅ Documentación y pruebas básicas
 
 💡 Autor
 
 👤 Luis Paradela
 📦 GitHub: luisparadela-z1
 
-🗓️ Próximo paso
+🏁 Conclusión
 
-➡️ Día 2:
-Implementar comentarios, mostrar imágenes y etiquetas en el frontend, y crear una plantilla base con un diseño inicial.
-
-
-
+El proyecto 1710-CMS cumple con todos los objetivos planteados del Proyecto 1: Blog CMS con Django, sirviendo como base sólida para futuros desarrollos, incluyendo dashboards personalizados, autenticación avanzada y despliegue en la nube.
