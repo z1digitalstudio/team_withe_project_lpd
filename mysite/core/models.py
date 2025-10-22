@@ -6,6 +6,10 @@ from tinymce.models import HTMLField
 User = settings.AUTH_USER_MODEL
 
 class Blog(models.Model):
+    """
+    Blog model representing a user's personal blog.
+    Each user can have only one blog (OneToOne relationship).
+    """
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='blog')
     title = models.CharField(max_length=200)
     bio = models.TextField(blank=True)
@@ -16,6 +20,10 @@ class Blog(models.Model):
 
 
 class Tag(models.Model):
+    """
+    Tag model for categorizing posts.
+    Tags can be shared across multiple posts (ManyToMany relationship).
+    """
     name = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
@@ -23,6 +31,10 @@ class Tag(models.Model):
 
 
 class Post(models.Model):
+    """
+    Post model representing a blog post.
+    Each post belongs to a blog and can have multiple tags.
+    """
     blog = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name='posts')
     title = models.CharField(max_length=250)
     slug = models.SlugField(max_length=260, unique=True, blank=True)
@@ -39,9 +51,13 @@ class Post(models.Model):
         ordering = ['-published_at', '-created_at']
 
     def save(self, *args, **kwargs):
+        """
+        Override save method to automatically generate slug from title.
+        If slug already exists, append a number to make it unique.
+        """
         if not self.slug:
             self.slug = slugify(self.title)
-            # Si el slug ya existe, agregar un número
+            # If slug already exists, add a number
             original_slug = self.slug
             counter = 1
             while Post.objects.filter(slug=self.slug).exists():

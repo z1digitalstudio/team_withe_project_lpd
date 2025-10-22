@@ -5,6 +5,9 @@ from .models import Blog, Post, Tag
 
 
 class UserLoginSerializer(serializers.Serializer):
+    """
+    Serializer for user login authentication.
+    """
     username = serializers.CharField()
     password = serializers.CharField()
     
@@ -19,13 +22,16 @@ class UserLoginSerializer(serializers.Serializer):
                     data['user'] = user
                     return data
                 else:
-                    raise serializers.ValidationError("Usuario inactivo")
+                    raise serializers.ValidationError("User account is disabled")
             else:
-                raise serializers.ValidationError("Credenciales inválidas")
+                raise serializers.ValidationError("Invalid credentials")
         else:
-            raise serializers.ValidationError("Debe proporcionar username y password")
+            raise serializers.ValidationError("Must provide username and password")
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
+    """
+    Serializer for user registration with password confirmation.
+    """
     password = serializers.CharField(write_only=True, min_length=8)
     password_confirm = serializers.CharField(write_only=True)
     
@@ -34,26 +40,37 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         fields = ['username', 'email', 'first_name', 'last_name', 'password', 'password_confirm']
     
     def validate(self, data):
+        # Check if passwords match
         if data['password'] != data['password_confirm']:
-            raise serializers.ValidationError("Las contraseñas no coinciden")
+            raise serializers.ValidationError("Passwords do not match")
         return data
     
     def create(self, validated_data):
+        # Remove password_confirm before creating user
         validated_data.pop('password_confirm')
         user = User.objects.create_user(**validated_data)
         return user
 
 class UserSerializer(serializers.ModelSerializer):
+    """
+    Serializer for user data (read-only fields).
+    """
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'first_name', 'last_name']
 
 class TagSerializer(serializers.ModelSerializer):
+    """
+    Serializer for tag data.
+    """
     class Meta:
         model = Tag
         fields = ['id', 'name']
 
 class BlogSerializer(serializers.ModelSerializer):
+    """
+    Serializer for blog data with nested user information.
+    """
     user = UserSerializer(read_only=True)
     
     class Meta:
@@ -61,6 +78,9 @@ class BlogSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'bio', 'user', 'created_at']
 
 class PostSerializer(serializers.ModelSerializer):
+    """
+    Serializer for post data with nested blog and tags information.
+    """
     blog = BlogSerializer(read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     
@@ -74,6 +94,9 @@ class PostSerializer(serializers.ModelSerializer):
         read_only_fields = ['slug', 'created_at', 'updated_at']
 
 class PostCreateSerializer(serializers.ModelSerializer):
+    """
+    Serializer for creating/updating posts (simplified fields).
+    """
     class Meta:
         model = Post
         fields = [
