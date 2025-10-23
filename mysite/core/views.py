@@ -1,3 +1,4 @@
+# core/views.py
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -9,15 +10,21 @@ from .serializers import (
     UserSerializer, BlogSerializer, PostSerializer, 
     PostCreateSerializer, TagSerializer, UserRegistrationSerializer, UserLoginSerializer
 )
-from .permissions import IsOwnerOrSuperuser, IsOwnerOrSuperuserForBlog
+from .permissions import IsOwnerOrSuperuser, IsOwnerOrSuperuserForBlog, IsSuperuserOrReadOnly
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     """
     ViewSet for user management with registration and login endpoints.
+    Only superusers can see all users, regular users can only see themselves.
     """
-    queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsSuperuserOrReadOnly]
+    
+    def get_queryset(self):
+        # Superusers can see all users, regular users only see themselves
+        if self.request.user.is_superuser:
+            return User.objects.all()
+        return User.objects.filter(id=self.request.user.id)
     
     @action(detail=False, methods=['post'], permission_classes=[permissions.AllowAny])
     def register(self, request):
@@ -77,10 +84,11 @@ class BlogViewSet(viewsets.ModelViewSet):
 class TagViewSet(viewsets.ModelViewSet):
     """
     ViewSet for tag management.
+    Any authenticated user can create tags, but only superusers can modify/delete.
     """
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsSuperuserOrReadOnly]
 
 class PostViewSet(viewsets.ModelViewSet):
     """

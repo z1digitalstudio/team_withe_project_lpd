@@ -1,69 +1,36 @@
 {% extends 'core/base.html' %}
 
-{% block title %}Posts - Mi Blog{% endblock %}
-
 {% block content %}
-<h1 class="mb-4">📰 Últimos Posts</h1>
-
-<div class="row">
-    {% for post in posts %}
-        <div class="col-md-6 mb-4">
-            <div class="card shadow-sm">
-                {% if post.cover %}
-                    <img src="{{ post.cover.url }}" class="card-img-top post-cover" alt="{{ post.title }}">
-                {% endif %}
-                <div class="card-body">
-                    <h5 class="card-title">{{ post.title }}</h5>
-                    <p class="card-text text-muted">{{ post.excerpt|truncatewords:30 }}</p>
-                    <p>
-                        <small>Autor: {{ post.blog.user.username }} | 
-                        Publicado: {{ post.published_at|date:"d M Y" }}</small>
-                    </p>
-                    <a href="{% url 'post_detail' slug=post.slug %}" class="btn btn-primary btn-sm">Leer más</a>
-                </div>
-            </div>
+<div class="container">
+    <h1>Blog Posts</h1>
+    
+    {% for post in page_obj %}
+        <div class="post-item">
+            <h2><a href="{% url 'post_detail' post.slug %}">{{ post.title }}</a></h2>
+            <p>{{ post.excerpt|truncatewords:30 }}</p>
+            <small>Publicado: {{ post.published_at|date:"d/m/Y" }}</small>
         </div>
     {% empty %}
-        <p>No hay publicaciones todavía.</p>
+        <p>No hay posts publicados.</p>
     {% endfor %}
-</div>
-
-
-<!-- Paginación -->
-{% if page_obj.has_other_pages %}
-<nav aria-label="Paginación">
-    <ul class="pagination justify-content-center mt-4">
-
-        {% if page_obj.has_previous %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
-            </li>
-        {% else %}
-            <li class="page-item disabled"><span class="page-link">Anterior</span></li>
-        {% endif %}
-
-        {% for num in page_obj.paginator.page_range %}
-            {% if page_obj.number == num %}
-                <li class="page-item active">
-                    <span class="page-link">{{ num }}</span>
-                </li>
-            {% else %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                </li>
+    
+    <!-- Navegación de páginas -->
+    {% if page_obj.has_other_pages %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; Primera</a>
+                <a href="?page={{ page_obj.previous_page_number }}">Anterior</a>
             {% endif %}
-        {% endfor %}
-
-        {% if page_obj.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
-            </li>
-        {% else %}
-            <li class="page-item disabled"><span class="page-link">Siguiente</span></li>
-        {% endif %}
-
-    </ul>
-</nav>
-{% endif %}
-
+            
+            <span class="current">
+                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+            </span>
+            
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">Última &raquo;</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

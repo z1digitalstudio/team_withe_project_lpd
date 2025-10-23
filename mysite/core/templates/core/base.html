@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,25 +13,30 @@
         body {
             background-color: #f8f9fa;
         }
+
         .navbar {
             margin-bottom: 2rem;
         }
+
         .post-cover {
             max-height: 400px;
             object-fit: cover;
             width: 100%;
             border-radius: 10px;
         }
-            /* Estilo para la paginación */
-    .pagination .page-item.active .page-link {
-        background-color: white;
-        border-color: #333;
-    }
-    .pagination .page-link {
-        color: #0d6efd;
-    }
+
+        /* Estilo para la paginación */
+        .pagination .page-item.active .page-link {
+            background-color: white;
+            border-color: #333;
+        }
+
+        .pagination .page-link {
+            color: #0d6efd;
+        }
     </style>
 </head>
+
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -49,4 +55,5 @@
         <small>© {{ now|date:"Y" }} Mi Blog — Creado con Django 🐍</small>
     </footer>
 </body>
+
 </html>
