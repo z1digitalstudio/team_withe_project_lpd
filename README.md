@@ -272,8 +272,3 @@ pip install -r requirements.txt
 [GitHub: luisparadela-z1](https://github.com/luisparadela-z1)
 
 ---
-
-## 🗓️ Próximo paso
-
-➡️ Día 2:  
-Implementar comentarios, mostrar imágenes y etiquetas en el frontend y crear una plantilla base con un diseño inicial.
