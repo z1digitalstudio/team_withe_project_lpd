@@ -1,10 +1,11 @@
 # core/views.py
 from rest_framework import viewsets, permissions, status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.urls import reverse
 from .models import Blog, Post, Tag
 from .serializers import (
     UserSerializer, BlogSerializer, PostSerializer, 
@@ -140,3 +141,15 @@ class PostViewSet(viewsets.ModelViewSet):
             posts = self.get_queryset()
         serializer = self.get_serializer(posts, many=True)
         return Response(serializer.data)
+
+@api_view(['GET'])
+def api_root(request):
+    """
+    API Root view that shows all available endpoints.
+    """
+    return Response({
+        'users': request.build_absolute_uri(reverse('user-list')),
+        'blogs': request.build_absolute_uri(reverse('blog-list')),
+        'posts': request.build_absolute_uri(reverse('post-list')),
+        'tags': request.build_absolute_uri(reverse('tag-list')),
+    })
