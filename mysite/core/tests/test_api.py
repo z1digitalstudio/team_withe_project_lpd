@@ -23,7 +23,13 @@ class APITestCase(APITestCase):
         )
     
     def test_user_registration(self):
-        """Test user registration endpoint"""
+        """
+        Test user registration endpoint.
+        
+        PURPOSE: Verifica que el endpoint de registro de usuarios funciona
+        correctamente. Debe crear un nuevo usuario y devolver un token
+        de autenticación para uso inmediato.
+        """
         data = {
             'username': 'newuser',
             'email': 'newuser@example.com',
@@ -35,7 +41,13 @@ class APITestCase(APITestCase):
         self.assertIn('token', response.data)
     
     def test_user_login(self):
-        """Test user login endpoint"""
+        """
+        Test user login endpoint.
+        
+        PURPOSE: Verifica que el endpoint de login de usuarios funciona
+        correctamente. Debe autenticar al usuario y devolver un token
+        de autenticación para las siguientes peticiones.
+        """
         data = {
             'username': 'testuser',
             'password': 'testpass123'
@@ -45,7 +57,13 @@ class APITestCase(APITestCase):
         self.assertIn('token', response.data)
     
     def test_post_creation(self):
-        """Test post creation endpoint"""
+        """
+        Test post creation endpoint.
+        
+        PURPOSE: Verifica que el endpoint de creación de posts funciona
+        correctamente. Un usuario autenticado debe poder crear posts
+        en su blog con todos los campos necesarios.
+        """
         data = {
             'title': 'Test Post',
             'content': '<p>Test content</p>',
@@ -57,7 +75,13 @@ class APITestCase(APITestCase):
         self.assertEqual(response.data['title'], 'Test Post')
     
     def test_post_list(self):
-        """Test post list endpoint"""
+        """
+        Test post list endpoint.
+        
+        PURPOSE: Verifica que el endpoint de listado de posts funciona
+        correctamente. Debe devolver todos los posts disponibles con
+        paginación (por eso se usa response.data['results']).
+        """
         Post.objects.create(
             blog=self.blog,
             title='Test Post',
@@ -68,7 +92,13 @@ class APITestCase(APITestCase):
         self.assertEqual(len(response.data['results']), 1)
     
     def test_post_permissions(self):
-        """Test that users can only modify their own posts"""
+        """
+        Test that users can only modify their own posts.
+        
+        PURPOSE: Verifica que el sistema de permisos funciona correctamente
+        en la API. Un usuario NO debe poder modificar posts de otros usuarios,
+        debe recibir un error 403 Forbidden.
+        """
         # Create another user
         other_user = User.objects.create_user(
             username='otheruser',
@@ -91,7 +121,13 @@ class APITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
     
     def test_tag_creation(self):
-        """Test tag creation endpoint"""
+        """
+        Test tag creation endpoint.
+        
+        PURPOSE: Verifica que solo los superusuarios pueden crear tags
+        a través de la API. Los tags son elementos globales del sistema,
+        por lo que solo los administradores pueden crearlos.
+        """
         # Create superuser for tag creation (only superusers can create tags)
         superuser = User.objects.create_superuser(
             username='superuser',
@@ -109,7 +145,13 @@ class APITestCase(APITestCase):
         self.assertEqual(response.data['name'], 'Django')
     
     def test_published_posts_filter(self):
-        """Test published posts filter"""
+        """
+        Test published posts filter.
+        
+        PURPOSE: Verifica que el filtro de posts publicados funciona
+        correctamente. Solo debe devolver posts con is_published=True,
+        excluyendo los borradores (is_published=False).
+        """
         # Create published and unpublished posts
         Post.objects.create(
             blog=self.blog,
@@ -130,7 +172,13 @@ class APITestCase(APITestCase):
         self.assertEqual(response.data[0]['title'], 'Published Post')
     
     def test_posts_by_tag_filter(self):
-        """Test posts by tag filter"""
+        """
+        Test posts by tag filter.
+        
+        PURPOSE: Verifica que el filtro de posts por tag funciona
+        correctamente. Debe devolver solo los posts que tienen
+        el tag especificado en el parámetro de consulta.
+        """
         tag = Tag.objects.create(name='Django')
         post = Post.objects.create(
             blog=self.blog,
