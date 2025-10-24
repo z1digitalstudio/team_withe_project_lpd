@@ -1,190 +1,279 @@
-📰 1710-CMS – Blog CMS con Django
+# 📰 1710-CMS (Django Blog CMS)
 
-Un CMS (Content Management System) desarrollado con Django, que permite a los usuarios crear y administrar su propio blog personal.
-Cada usuario puede registrarse, crear publicaciones con un editor enriquecido (TinyMCE), añadir imágenes, etiquetas, y gestionar todo su contenido desde el panel de administración o mediante una API REST.
+Este proyecto es un **CMS (Content Management System)** desarrollado con Django.  
+Permite a cada usuario tener su propio blog, crear publicaciones con un editor enriquecido (TinyMCE), subir imágenes, asignar etiquetas y gestionarlas desde el panel de administración.
 
-🚀 Estado del Proyecto
+---
 
-✅ Completado
+## 🚀 Estado actual del proyecto
 
-Este proyecto forma parte del Proyecto 1: Blog CMS con Django, cuyo objetivo fue aprender a configurar, desarrollar y documentar un CMS completo utilizando el ecosistema Django.
+### ✅ **Configuración completada**
+- Proyecto base Django (`mysite`)
+- Aplicación principal (`core`)
+- Entorno virtual listo para desarrollo
+- Módulos instalados y migraciones aplicadas
+- Superusuario creado y acceso al panel de administración habilitado
 
-🧱 Arquitectura del Sistema
-🔹 Modelos de Datos
-User (Django built-in)
- └── Blog (1:1 con User)
-      └── Post (N:1 con Blog)
-           └── Tag (M:N con Post)
+### ✅ **Integraciones implementadas**
+- **TinyMCE** para edición enriquecida de posts
+- **Django Import-Export** para gestionar contenido desde el admin
+- Configuración de **MEDIA_URL** y **MEDIA_ROOT** para imágenes
+- Panel personalizado: cada usuario gestiona solo su propio blog y posts
 
-🔹 Funcionalidades Principales
+### ✅ **Modelos implementados**
+#### `Blog`
+Cada usuario tiene un blog con:
+- `title`: título del blog
+- `bio`: descripción o biografía
+- `user`: relación OneToOne con el usuario
 
-Registro y autenticación de usuarios
+#### `Tag`
+Sistema de etiquetas reutilizables.
 
-Creación y gestión de blogs personales
+#### `Post`
+- `title`, `slug`, `content`, `excerpt`, `cover`, `tags`
+- Campos de control: `is_published`, `created_at`, `updated_at`, `published_at`
+- Relación con `Blog`
 
-Editor de texto enriquecido (TinyMCE)
+### ✅ **Panel de administración**
+- Integración con TinyMCE
+- Filtros y búsquedas personalizadas
+- Los usuarios solo ven y editan su propio contenido (no superusuarios)
 
-Sistema de etiquetas reutilizables
+### ✅ **Frontend actual**
+- `/blog/` → lista de posts publicados
+- `/blog/<slug>/` → detalle completo de un post
+- Templates:  
+  - `post_list.html`
+  - `post_detail.html`
 
-Subida y gestión de imágenes
+---
 
-Exportación e importación de contenido (CSV, JSON, XLS)
+## ⚙️ **Instalación y ejecución local**
 
-API REST funcional para consumo externo
+<details>
+  <summary><strong>Guía clásica (entorno virtual)</strong></summary>
 
-Panel de administración personalizado por usuario
-
-⚙️ Instalación y Ejecución Local
-1️⃣ Clonar el repositorio
+1️⃣ Clonar el repositorio  
+```bash
 git clone https://github.com/luisparadela-z1/1710-cms.git
 cd 1710-cms/mysite
+```
 
-2️⃣ Activar el entorno virtual
+2️⃣ Activar el entorno virtual  
+```bash
+python3 -m venv ../venv
 source ../venv/bin/activate
+```
 
-3️⃣ Instalar dependencias
+3️⃣ Instalar dependencias  
+```bash
 pip install -r requirements.txt
+```
 
-4️⃣ Aplicar migraciones
+4️⃣ Aplicar migraciones  
+```bash
 python manage.py migrate
+```
 
-5️⃣ Crear superusuario
+5️⃣ Crear superusuario (si no lo has hecho)  
+```bash
 python manage.py createsuperuser
+```
 
-6️⃣ Ejecutar el servidor
+6️⃣ Ejecutar el servidor de desarrollo  
+```bash
 python manage.py runserver
+```
 
-7️⃣ Acceder desde el navegador
+7️⃣ Accede desde el navegador  
+- **Admin:** http://127.0.0.1:8000/admin/  
+- **Blog público:** http://127.0.0.1:8000/blog/
 
-Panel Admin: http://127.0.0.1:8000/admin/
+</details>
 
-Blog público: http://127.0.0.1:8000/blog/
+---
 
-🗂️ Estructura del Proyecto
+<details>
+  <summary><strong>Ejecutar con Docker (recomendado para producción/desarrollo rápido)</strong></summary>
+
+Asegúrate de tener [Docker](https://www.docker.com/) y [Docker Compose](https://docs.docker.com/compose/) instalados.
+
+1️⃣ Clonar el repositorio  
+```bash
+git clone https://github.com/luisparadela-z1/1710-cms.git
+cd 1710-cms
+```
+
+2️⃣ Crea o revisa los archivos `Dockerfile` y `docker-compose.yml` (proporcionados en el repo). Si no existen, deberías crearlos como sigue:
+
+**Ejemplo mínimo de Dockerfile:**
+```Dockerfile
+FROM python:3.12
+WORKDIR /app
+COPY mysite/requirements.txt .
+RUN pip install --upgrade pip && pip install -r requirements.txt
+COPY mysite /app
+EXPOSE 8000
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+```
+
+**Ejemplo mínimo de docker-compose.yml:**
+```yaml
+version: '3.9'
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: mysite
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  web:
+    build: .
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./mysite:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      DB_NAME: mysite
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: db
+      DB_PORT: 5432
+volumes:
+  postgres_data:
+```
+
+3️⃣ Construye y lanza los contenedores  
+```bash
+docker compose up --build
+```
+
+4️⃣ Crea el superusuario (en otra terminal):  
+```bash
+docker compose exec web python manage.py createsuperuser
+```
+
+5️⃣ Accede desde el navegador  
+- **Admin:** http://localhost:8000/admin/  
+- **Blog:** http://localhost:8000/blog/
+
+> **Nota:** Si quieres ejecutar comandos adicionales, solo usa  
+> `docker compose exec web <comando>`  
+> Ejemplo:  
+> `docker compose exec web python manage.py shell`
+
+</details>
+
+---
+
+## 📦 Estructura del proyecto
+
+```
 1710-cms/
 │
 ├── mysite/
-│   ├── core/
-│   │   ├── admin.py
-│   │   ├── models.py
-│   │   ├── urls.py
-│   │   ├── views.py
-│   │   └── templates/core/
-│   │       ├── post_list.html
-│   │       └── post_detail.html
-│   │
 │   ├── mysite/
 │   │   ├── settings.py
 │   │   ├── urls.py
 │   │   └── ...
 │   │
+│   ├── core/
+│   │   ├── admin.py
+│   │   ├── models.py
+│   │   ├── urls.py
+│   │   ├── views.py
+│   │   └── templates/
+│   │       └── core/
+│   │           ├── post_list.html
+│   │           └── post_detail.html
+│   │
 │   ├── manage.py
 │
-├── venv/
+├── venv/           # solo en desarrollo local
+│
 └── README.md
+```
 
-📦 Dependencias Principales
+---
 
-Archivo requirements.txt:
+## 📚 Dependencias principales
 
+Archivo requirements.txt recomendado:
+
+```
 Django>=5.2
 django-tinymce>=4.0
 django-import-export>=4.0
-django-rest-framework>=3.15
 Pillow>=10.0
+```
 
+Instálalas con:
 
-Instalación:
-
+```bash
 pip install -r requirements.txt
+```
 
-🧭 Funcionalidades Implementadas
-Funcionalidad	Estado	Descripción
-Registro/Login de usuarios	✅	Sistema de autenticación integrado
-Blog personal por usuario	✅	Cada usuario tiene su propio blog
-Creación y edición de posts	✅	Editor TinyMCE desde el admin
-Etiquetas reutilizables	✅	Relación ManyToMany con Post
-Subida de imágenes	✅	Campo cover en los posts
-Filtros y búsqueda en admin	✅	Personalización avanzada de admin
-API REST funcional	✅	Endpoints para Blog, Post y Tag
-Exportación/Importación de datos	✅	Integrado con django-import-export
-Control de visibilidad por usuario	✅	Cada usuario ve solo su contenido
-Frontend básico con templates	✅	Listado y detalle de posts publicados
-🔌 Endpoints Principales (API REST)
-Endpoint	Método	Descripción
-/api/blogs/	GET / POST	Listar o crear blogs
-/api/posts/	GET / POST	Listar o crear posts
-/api/tags/	GET / POST	Listar o crear etiquetas
-/api/posts/<id>/	GET / PUT / DELETE	Ver, editar o eliminar un post
+---
 
-La API utiliza Django REST Framework con autenticación básica.
+## 🧭 Funcionalidades disponibles
 
-🧠 Enfoque Formativo y Aprendizaje con IA
+| Funcionalidad                      | Estado | Descripción                          |
+| -----------------------------------|:------:|--------------------------------------|
+| Crear Blogs por usuario            |   ✅   | Cada usuario tiene un blog propio    |
+| Crear Posts con editor TinyMCE     |   ✅   | Editor enriquecido                   |
+| Añadir etiquetas                   |   ✅   | Sistema de tags reutilizables        |
+| Subir imágenes (cover)             |   ✅   | Campo cover en los posts             |
+| Filtrar y buscar en admin          |   ✅   | Listados personalizados              |
+| Mostrar posts publicados           |   ✅   | Listado en /blog/                    |
+| Detalle del post                   |   ✅   | Vista /blog/&lt;slug&gt;/            |
+| Control de visibilidad por usuario |   ✅   | Cada usuario ve solo su blog         |
 
-Este proyecto fue desarrollado con un enfoque educativo, utilizando la IA como copiloto de aprendizaje.
-Se fomentó:
+---
 
-Comprensión profunda del ecosistema Django
+## 🔮 Roadmap
 
-Escritura manual de todo el código
+### Fase 2 – Mejoras del blog público
 
-Uso de IA para consultas, depuración y buenas prácticas
+- [ ] Añadir paginación al listado de posts
+- [ ] Mostrar imagen de portada (cover) en post_list.html
+- [ ] Mostrar etiquetas y autor en post_detail.html
+- [ ] Añadir sistema de comentarios
 
-🧰 Tecnologías y Librerías
+### Fase 3 – Autenticación y dashboards
 
-Django – Framework principal
+- [ ] Permitir registro y login desde el frontend
+- [ ] Dashboard de usuario fuera del admin
+- [ ] Perfil público (`/user/<username>/`)
 
-Django REST Framework – API REST
+### Fase 4 – Diseño y estilo
 
-django-tinymce – Editor HTML enriquecido
+- [ ] Crear plantilla base (`base.html`)
+- [ ] Integrar TailwindCSS o Bootstrap
+- [ ] Añadir cabecera, footer y navegación responsive
 
-django-import-export – Exportación e importación de datos
+### Fase 5 – API y despliegue
 
-Pillow – Manejo de imágenes
+- [ ] Implementar API REST con Django REST Framework
+- [ ] Preparar para despliegue en Render / Railway / Vercel
 
-SQLite – Base de datos de desarrollo
+---
 
-Comandos de uso diario:
+## 💡 Autor
 
- # Levantar el servidor
-docker-compose up
+**👤 Luis Paradela**  
+[GitHub: luisparadela-z1](https://github.com/luisparadela-z1)
 
-# Levantar en segundo plano
-docker-compose up -d
+---
 
-# Parar el servidor
-docker-compose down
+## 🗓️ Próximo paso
 
-# Ver logs
-docker-compose logs
-
-# Ejecutar comandos Django
-docker-compose run web python manage.py [comando]
-
-URLs disponibles:
-http://127.0.0.1:8000/ - API Root
-http://127.0.0.1:8000/admin/ - Panel de administración
-http://127.0.0.1:8000/api/ - API REST
-http://127.0.0.1:8000/swagger/ - Documentación de la API
-Servicios incluidos:
-Django (Puerto 8000)
-PostgreSQL (Puerto 5432)
-
-📘 Objetivos de Aprendizaje Alcanzados
-
-✅ Configuración completa de proyectos Django
-✅ Diseño de modelos y relaciones entre entidades
-✅ Personalización avanzada del panel admin
-✅ Implementación de API REST con DRF
-✅ Gestión de dependencias y entorno virtual
-✅ Buenas prácticas de código y estructura
-✅ Documentación y pruebas básicas
-
-💡 Autor
-
-👤 Luis Paradela
-📦 GitHub: luisparadela-z1
-
-🏁 Conclusión
-
-El proyecto 1710-CMS cumple con todos los objetivos planteados del Proyecto 1: Blog CMS con Django, sirviendo como base sólida para futuros desarrollos, incluyendo dashboards personalizados, autenticación avanzada y despliegue en la nube.
+➡️ Día 2:  
+Implementar comentarios, mostrar imágenes y etiquetas en el frontend y crear una plantilla base con un diseño inicial.
