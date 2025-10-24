@@ -144,6 +144,32 @@ Pillow – Manejo de imágenes
 
 SQLite – Base de datos de desarrollo
 
+Comandos de uso diario:
+
+ # Levantar el servidor
+docker-compose up
+
+# Levantar en segundo plano
+docker-compose up -d
+
+# Parar el servidor
+docker-compose down
+
+# Ver logs
+docker-compose logs
+
+# Ejecutar comandos Django
+docker-compose run web python manage.py [comando]
+
+URLs disponibles:
+http://127.0.0.1:8000/ - API Root
+http://127.0.0.1:8000/admin/ - Panel de administración
+http://127.0.0.1:8000/api/ - API REST
+http://127.0.0.1:8000/swagger/ - Documentación de la API
+Servicios incluidos:
+Django (Puerto 8000)
+PostgreSQL (Puerto 5432)
+
 📘 Objetivos de Aprendizaje Alcanzados
 
 ✅ Configuración completa de proyectos Django
