@@ -26,3 +26,5 @@ coverage.xml
 db.sqlite3
 media/
 staticfiles/
+
+.env
