@@ -12,3 +12,4 @@ dj-database-url==2.1.0
 python-decouple==3.8
 psycopg2-binary==2.9.7
 drf-spectacular==0.26.5
+gunicorn==22.0.0
