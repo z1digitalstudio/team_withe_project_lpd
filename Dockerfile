@@ -29,4 +29,4 @@ COPY . /app/
 EXPOSE 8000
 
 # Comando para ejecutar la aplicación
-CMD ["sh", "-c", "gunicorn mysite.wsgi:application --bind 0.0.0.0:$PORT"]
+CMD ["sh", "-c", "gunicorn mysite.wsgi:application --bind 0.0.0.0:${PORT:-8000}"]
