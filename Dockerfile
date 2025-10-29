@@ -25,6 +25,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copiar el código del proyecto
 COPY . /app/
 
+# Crear directorio temporal y dar permisos
+RUN mkdir -p /tmp && chmod 777 /tmp
+
 # Exponer el puerto 8000
 EXPOSE 8000
 
